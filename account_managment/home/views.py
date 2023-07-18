@@ -19,7 +19,7 @@ class Renderhomepage(View):
     template_name = 'HtmlContent/index.html'
     
     def get(self,request):
-        if request.session['name'] != None :
+        if 'name' in request.session:
             parent_company = request.session['company']
             expense = dbname["expense"]
             rebate = dbname["rebate"]
@@ -45,16 +45,16 @@ class Renderhomepage(View):
                     }
             return render(request, self.template_name,context)  
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
 # Product view.
 class addproductpage(View):
     template_name = 'HtmlContent/addproduct.html'
 
     def get(self,request):
-        if request.session['name'] != None :
+        if 'name' in request.session:
             return render(request, self.template_name) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
     
     def post(self,request):
         parent_company = request.session['company']
@@ -78,23 +78,23 @@ class viewproductpage(View):
 
     def get(self,request):
         parent_company = request.session['company']
-        if request.session['name'] != None :
+        if 'name' in request.session:
             collection_name = dbname["product"]
             data = list(collection_name.find({'company':parent_company}))
             return render(request, self.template_name,{"data":data}) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
 
 class editproductdetails(View):
     template_name = 'HtmlContent/editproductdetails.html'
 
     def get(self,request,id):
-        if request.session['name'] != None :
+        if 'name' in request.session:
             collection_name = dbname["product"]
             data = list(collection_name.find({'id':id}))
             return render(request, self.template_name,{'data':data}) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
     
 class editproduct(View):
     def post(self,request):
@@ -124,10 +124,10 @@ class addcustomerpage(View):
     template_name = 'HtmlContent/addcustomer.html'
 
     def get(self,request):
-        if request.session['name'] != None :
+        if 'name' in request.session:
             return render(request, self.template_name) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
     
     def post(self,request):
         collection_name = dbname["customer"]
@@ -154,7 +154,7 @@ class viewcustomerpage(View):
     template_name = 'HtmlContent/viewcustomer.html'
 
     def get(self,request):
-        if request.session['name'] != None :
+        if 'name' in request.session:
             collection_name = dbname["customer"]
             rebate = dbname["rebate"]
             parent_company = request.session['company']
@@ -163,7 +163,7 @@ class viewcustomerpage(View):
             rebate = list(rebate.find({'parent':parent_company}))
             return render(request, self.template_name,{"data":data,"rebate":rebate,"total":0}) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
     
     def post(self,request):
         collection_name = dbname["rebate"]
@@ -187,12 +187,12 @@ class editcustomerdetails(View):
 
     def get(self,request,id):
         parent_company = request.session['company']
-        if request.session['name'] != None :
+        if 'name' in request.session:
             collection_name = dbname["customer"]
             data = list(collection_name.find({"id":id,"parent":parent_company}))
             return render(request, self.template_name,{"data":data}) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
 
 class editcustomer(View):
     def post(self,request):
@@ -237,7 +237,7 @@ class addorderpage(View):
 
     def get(self,request):
         parent_company = request.session['company']
-        if request.session['name'] != None :
+        if 'name' in request.session:
             collection_name = dbname["customer"]
             data = list(collection_name.find({"parent":parent_company}))
 
@@ -245,7 +245,7 @@ class addorderpage(View):
             product = list(collection_name1.find({"company":parent_company}))
             return render(request, self.template_name,{"data":data,"product":product}) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
     
     def post(self,request):
         collection_name = dbname["orders"]
@@ -285,19 +285,19 @@ class vieworderpage(View):
     template_name = 'HtmlContent/vieworder.html'
 
     def get(self,request):
-        if request.session['name'] != None :
+        if 'name' in request.session:
             collection_name = dbname["orders"]
             parent_company = request.session['company']
             data = list(collection_name.find({"parent":parent_company}))
             return render(request, self.template_name,{'order': data}) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
 
 class editorderdetails(View):
     template_name = 'HtmlContent/editorderdetails.html'
 
     def get(self,request,id):
-        if request.session['name'] != None :
+        if 'name' in request.session:
             collection_name = dbname["orders"]
             parent_company = request.session['company']
             customer = dbname["customer"]
@@ -309,7 +309,7 @@ class editorderdetails(View):
             data = list(collection_name.find({"orderid":id}))
             return render(request, self.template_name,{"data":data,"customer":customerdata,"product":productdata}) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
 
 class editorder(View):
     template_name = 'HtmlContent/editorderdetails.html'
@@ -366,7 +366,7 @@ class vieworderdetails(View):
 
     def get(self,request,customer,id):
         parent_company = request.session['company']
-        if request.session['name'] != None :
+        if 'name' in request.session:
             collection_name = dbname["orders"]
             data = list(collection_name.find({"orderid":str(id),"parent":parent_company}))
 
@@ -378,17 +378,17 @@ class vieworderdetails(View):
 
             return render(request, self.template_name,{"order":data,"customer":customerdata,"company":companydata}) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
         
 # Expense view.
 class addexpensepage(View):
     template_name = 'HtmlContent/addexpense.html'
 
     def get(self,request):
-        if request.session['name'] != None :
+        if 'name' in request.session:
             return render(request, self.template_name) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
     
     def post(self,request):
 
@@ -415,25 +415,25 @@ class viewexpensepage(View):
     template_name = 'HtmlContent/viewexpense.html'
 
     def get(self,request):
-        if request.session['name'] != None :
+        if 'name' in request.session:
             collection_name = dbname["expense"]
             parent_company = request.session['company']
             data = list(collection_name.find({"parent":parent_company}))
             return render(request, self.template_name,{"data":data}) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
 
 class editexpensedetails(View):
     template_name = 'HtmlContent/editexpense.html'
 
     def get(self,request,id):
-        if request.session['name'] != None :
+        if 'name' in request.session:
             collection_name = dbname["expense"]
 
             data = list(collection_name.find({"id":id }))
             return render(request, self.template_name,{"data":data}) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
 
 class editexpense(View): 
     def post(self,request):
@@ -464,13 +464,13 @@ class profiledetails(View):
     template_name = 'HtmlContent/profile.html'
 
     def get(self,request):
-        if request.session['name'] != None :
+        if 'name' in request.session:
             collection_name = dbname["user"]
             data = list(collection_name.find({"id": str(52274) }))
 
             return render(request, self.template_name,{'data':data}) 
         else:
-            return redirect('Log Out')
+            return HttpResponseRedirect('/logout')
     def post(self,request):
         collection_name = dbname["user"]
 
